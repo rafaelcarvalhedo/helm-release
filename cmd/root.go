@@ -22,6 +22,7 @@ var (
 	bump                 string
 	source               string
 	strict               bool
+	preReleaseId         string
 )
 
 // rootCmd represents the base command when called without any subcommands
@@ -58,7 +59,8 @@ var rootCmd = &cobra.Command{
 		}
 
 		nextType := version.NewNextType(bump)
-		version, err := getter.NextVersion(nextType)
+		version, err := getter.NextVersion(nextType, preReleaseId)
+
 		if version == nil {
 			return err
 		}
@@ -73,6 +75,8 @@ var rootCmd = &cobra.Command{
 		}
 
 		log.Infof("updating the Chart.yaml to version %s", version.String())
+		os.Setenv("NEW_CHART_VERSION", version.String())
+
 		chart, err := helm.New(dir, &tagPath)
 		if err != nil {
 			return err
@@ -114,6 +118,7 @@ func init() {
 	rootCmd.Flags().StringVar(&bump, "bump", "", "Specifies to bump major, minor, or patch when using print-computed-version")
 	rootCmd.Flags().StringVar(&source, "source", "git", "Specifies the source of the version information options (git, helm)")
 	rootCmd.Flags().BoolVar(&strict, "strict", false, "When enabled it will look through all tags for semver tags and fail if tags exist outside of master")
+	rootCmd.Flags().StringVar(&preReleaseId, "pre-release-id", "", "Used as identifier for pre-releases version (beta,alpha and rc)")
 }
 
 // initConfig reads in config file and ENV variables if set.

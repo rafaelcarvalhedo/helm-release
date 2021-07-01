@@ -224,7 +224,7 @@ func (g *Git) versionFromHistory(ver *semver.Version) (*semver.Version, error) {
 }
 
 // NextVersion determines the correct version
-func (g *Git) NextVersion(nextType *version.NextType) (*semver.Version, error) {
+func (g *Git) NextVersion(nextType *version.NextType, preReleaseId string) (*semver.Version, error) {
 	ver, err := g.Get()
 	if err != nil {
 		return nil, err
@@ -242,7 +242,7 @@ func (g *Git) NextVersion(nextType *version.NextType) (*semver.Version, error) {
 			return nil, err
 		}
 	} else {
-		nextVersion, err = version.NextVersion(ver, nextType)
+		nextVersion, err = version.NextVersion(ver, nextType, preReleaseId)
 		if err != nil {
 			return nil, err
 		}

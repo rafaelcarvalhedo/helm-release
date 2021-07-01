@@ -32,7 +32,7 @@ func NewNextType(val string) *NextType {
 // Getter for versions
 type Getter interface {
 	Get() (*semver.Version, error)
-	NextVersion(nextType *NextType) (*semver.Version, error)
+	NextVersion(nextType *NextType, preReleaseId string) (*semver.Version, error)
 }
 
 // Setter for versions
@@ -41,10 +41,11 @@ type Setter interface {
 }
 
 // NextVersion takes a semver and updates it to the next version
-func NextVersion(version *semver.Version, nextType *NextType) (*semver.Version, error) {
+func NextVersion(version *semver.Version, nextType *NextType, preReleaseId string) (*semver.Version, error) {
 	msg := "major, minor, and patch are the only valid options for Next"
 
 	var nextVersion semver.Version
+
 	if nextType == nil {
 		return nil, errors.New(msg)
 	} else if *nextType == Major {
@@ -55,6 +56,14 @@ func NextVersion(version *semver.Version, nextType *NextType) (*semver.Version, 
 		nextVersion = version.IncPatch()
 	} else {
 		return nil, errors.New(msg)
+	}
+
+	if preReleaseId != "" {
+		var nextVersion, err = nextVersion.SetPrerelease(preReleaseId)
+		if err != nil {
+			return nil, err
+		}
+		return &nextVersion, nil
 	}
 	return &nextVersion, nil
 }

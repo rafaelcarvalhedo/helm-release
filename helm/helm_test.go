@@ -1,6 +1,7 @@
 package helm
 
 import (
+	"github.com/sstarcher/helm-release/version"
 	"os"
 	"strconv"
 	"testing"
@@ -66,7 +67,7 @@ func TestVersions(t *testing.T) {
 		git, err := git.New(".")
 		assert.Nil(err)
 
-		actual, err := git.NextVersion(nil)
+		actual, err := git.NextVersion(nil, "")
 		assert.NotNil(actual)
 		if actual != nil {
 			assert.Equal(tt.expected, actual.String())
@@ -80,4 +81,17 @@ func TestVersions(t *testing.T) {
 		os.Unsetenv("COMMITS")
 		os.Unsetenv("IS_TAGGED")
 	}
+}
+
+func TestPreReleaseVersion(t *testing.T) {
+	assert := assert.New(t)
+
+	chart, err := New(noTags, nil)
+	assert.Nil(err)
+	assert.NotNil(chart)
+
+	nextType := version.NewNextType("minor")
+	version, err := chart.NextVersion(nextType, "alpha")
+
+	assert.Contains(version.String(), "alpha")
 }

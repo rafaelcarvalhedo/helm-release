@@ -177,11 +177,11 @@ func (c *Chart) Get() (*semver.Version, error) {
 }
 
 // NextVersion from current version
-func (c *Chart) NextVersion(nextType *version.NextType) (*semver.Version, error) {
+func (c *Chart) NextVersion(nextType *version.NextType, preReleaseId string) (*semver.Version, error) {
 	ver, err := c.Get()
 	if err != nil {
 		return nil, err
 	}
 
-	return version.NextVersion(ver, nextType)
+	return version.NextVersion(ver, nextType, preReleaseId)
 }
