@@ -46,8 +46,10 @@ func NextVersion(version *semver.Version, nextType *NextType, preReleaseId strin
 
 	var nextVersion semver.Version
 
-	if nextType == nil {
+	if nextType == nil && preReleaseId == "" {
 		return nil, errors.New(msg)
+	} else if preReleaseId != "" {
+		nextVersion, _ = version.SetPrerelease(preReleaseId)
 	} else if *nextType == Major {
 		nextVersion = version.IncMajor()
 	} else if *nextType == Minor {
@@ -58,12 +60,5 @@ func NextVersion(version *semver.Version, nextType *NextType, preReleaseId strin
 		return nil, errors.New(msg)
 	}
 
-	if preReleaseId != "" {
-		var nextVersion, err = nextVersion.SetPrerelease(preReleaseId)
-		if err != nil {
-			return nil, err
-		}
-		return &nextVersion, nil
-	}
 	return &nextVersion, nil
 }
