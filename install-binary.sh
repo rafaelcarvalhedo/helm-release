@@ -2,7 +2,7 @@
 
 # Based off of https://github.com/technosophos/helm-template/blob/master/install-binary.sh
 PROJECT_NAME="helm-release"
-PROJECT_GH="sstarcher/$PROJECT_NAME"
+PROJECT_GH="rafaelcarvalhedo/$PROJECT_NAME"
 
 [ -n "${DEBUG+x}" ] && set -x
 
@@ -93,7 +93,7 @@ getDownloadURL() {
 
   if [ -z "$DOWNLOAD_URL" ]; then
     VERSION="$(grep "version:" "$HELM_PLUGIN_DIR/plugin.yaml"  | cut -d '"' -f 2)"
-    DOWNLOAD_URL="https://github.com/sstarcher/helm-release/releases/download/${VERSION}/helm-release_${VERSION}_${OS}_amd64.tar.gz"
+    DOWNLOAD_URL="https://github.com/rafaelcarvalhedo/helm-release/releases/download/${VERSION}/helm-release_${VERSION}_${OS}_amd64.tar.gz"
   fi
 }
 
@@ -121,7 +121,7 @@ installFile() {
   if [ "${helm_version:0:2}" == "v3" ]; then
     DST="${HELM_PLUGIN_PATH}/${PROJECT_NAME}/"
   fi
-  cp "$HELM_TMP_BIN"* "${DST}"
+  cp -r "$HELM_TMP_BIN"* "${DST}"
 }
 
 # fail_trap is executed if an error occurs.
